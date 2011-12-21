@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jspphptool" default="jar" basedir=".">
+
+	<property name="src.dir" value="src" />
+	<property name="lib.dir" value="lib" />
+	<property name="base.dir" value="build" />
+	<property name="build.dir" value="build/jar" />
+
+	<!-- 初始化 classpath -->
+	<path id="project.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<pathelement location="${base.dir}/classes" />
+		<pathelement path="${java.class.path}" />
+	</path>
+
+	<!-- 删除之前的目录结构 -->
+	<target name="clear">
+		<delete dir="${base.dir}" />
+	</target>
+
+	<!-- 创建化目录结构 -->
+	<target name="init">
+		<mkdir dir="${base.dir}" />
+		<mkdir dir="${base.dir}/classes" />
+		<mkdir dir="${base.dir}/jar" />
+	</target>
+
+	<!-- 编译Java代码 -->
+	<target name="compile" depends="init" description="编译java源码">
+		<javac srcdir="${src.dir}" deprecation="false" destdir="${base.dir}/classes" encoding="UTF-8">
+			<classpath refid="project.classpath" />
+			<compilerarg value="-Xlint:checked -Xlint:deprecation" />
+		</javac>
+
+		<copy todir="${build.dir}">
+			<fileset dir="${src.dir}">
+				<!--	<include name="**/*.xml" /> -->
+				<include name="**/*.jar" />
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- 将class文件打成 jar包 -->
+	<target name="jar" depends="compile">
+		<jar jarfile="${build.dir}/${ant.project.name}.jar">
+			<fileset dir="${base.dir}/classes">
+				<include name="**/*.class" />
+			</fileset>
+		</jar>
+	</target>
+
+
+</project>
